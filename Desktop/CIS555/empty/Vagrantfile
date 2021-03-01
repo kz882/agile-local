@@ -1,0 +1,70 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+
+Vagrant.configure(2) do |config|
+
+  # 64 bit Ubuntu Vagrant Box
+  config.vm.box = "ubuntu/focal64"
+
+  ## Configure hostname and port forwarding
+  config.vm.hostname = "cis455-555"
+  config.vm.network "forwarded_port", guest: 45555, host: 45555
+  config.vm.network "forwarded_port", guest: 80, host: 80
+  config.vm.network "forwarded_port", guest: 8001, host: 8001
+  config.vm.network "forwarded_port", guest: 8002, host: 8002
+  config.ssh.forward_agent = true
+  config.ssh.forward_x11 = true
+
+  ## Provisioning
+  config.vm.provision "shell", inline: <<-SHELL
+    cp /etc/apt/sources.list .
+    echo "deb http://cz.archive.ubuntu.com/ubuntu bionic main universe" >> sources.list
+    sudo cp sources.list /etc/apt
+    sudo apt-get update
+    sudo apt-get install -y openjdk-11-jdk openjdk-11-source maven git zip libswt-gtk-4-java
+    #git config --global core.sshCommand "ssh -i /vagrant/cis555-key"
+
+    wget https://mirrors.neusoft.edu.cn/eclipse/technology/epp/downloads/release/2020-12/R/eclipse-java-2020-12-R-linux-gtk-x86_64.tar.gz > /dev/null 2&>1
+    tar xzf eclipse-java-2020-12-R-linux-gtk-x86_64.tar.gz
+    mv eclipse /usr/lib/
+    ln -s /usr/lib/eclipse/eclipse /bin/eclipse
+
+    cat > /home/vagrant/.bash_profile <<'endmsg'
+SSH_ENV="$HOME/.ssh/environment"
+
+function start_agent {
+    echo "Initialising new SSH agent..."
+    /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+    echo succeeded
+    chmod 600 "${SSH_ENV}"
+    . "${SSH_ENV}" > /dev/null
+}
+
+# Source SSH settings, if applicable
+
+if [ -f "${SSH_ENV}" ]; then
+    . "${SSH_ENV}" > /dev/null
+    #ps ${SSH_AGENT_PID} doesn't work under cywgin
+    ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+        start_agent;
+    }
+else
+    start_agent;
+fi
+/usr/bin/ssh-add /vagrant/cis555-key;
+endmsg
+  SHELL
+
+  ## CPU & RAM
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--cpuexecutioncap", "100"]
+    vb.memory = 4096
+    vb.cpus = 2
+  end
+
+end

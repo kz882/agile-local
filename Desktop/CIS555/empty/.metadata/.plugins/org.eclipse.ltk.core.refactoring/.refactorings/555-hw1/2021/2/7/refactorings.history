@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Encapsulate field &apos;edu.upenn.cis.cis455.m1.server.HttpWorker.port&apos; in &apos;edu.upenn.cis.cis455.m1.server.HttpWorker&apos;&#x0A;- Original project: &apos;555-hw1&apos;&#x0A;- Original element: &apos;edu.upenn.cis.cis455.m1.server.HttpWorker.port&apos;&#x0A;- Getter method name: &apos;getPort&apos;&#x0A;- Setter method name: &apos;setPort&apos;&#x0A;- Field visibility: &apos;public&apos;&#x0A;- Use getter and setter methods in declaring type" comments="false" declaring="true" description="Encapsulate field &apos;port&apos;" flags="589830" getter="getPort" id="org.eclipse.jdt.ui.self.encapsulate" input="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;edu.upenn.cis.cis455.m1.server{HttpWorker.java[HttpWorker^port" insertion="5" setter="setPort" stamp="1613230909718" version="1.0" visibility="1"/>
+</session>

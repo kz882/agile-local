@@ -1,0 +1,58 @@
+package edu.upenn.cis.cis455.m1.interfaces;
+
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+
+public class HttpResponse extends Response{
+    protected Socket socket;
+    protected HttpRequest request;
+    protected Map<String, String> headers = new HashMap<String, String>();
+	
+    Map<Integer, String> codeToBody  = new HashMap<Integer, String>() {/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4601236138302735259L;
+
+	{
+        put(200, "OK");
+        put(400, "Bad Request");
+        put(403, "Forbidden");
+        put(404, "Not Found");
+    }};
+    
+	public HttpResponse(Socket socket, HttpRequest request) {
+		super();
+		this.socket = socket;
+		this.request = request;
+	}
+
+	public Socket getSocket() {
+		return socket;
+	}
+
+	public void setSocket(Socket socket) {
+		this.socket = socket;
+	}
+
+	@Override
+	public String getHeaders() {
+		//return a String of headers, include new line in the end
+    	StringBuilder sb = new StringBuilder();
+    	for (Map.Entry<String,String> entry : this.headers.entrySet()) {
+    		String key = entry.getKey().substring(0, 1).toUpperCase() + entry.getKey().substring(1);
+    		sb.append(key + ": " + entry.getValue() + "\r\n");
+    	}
+    	sb.append("\r\n");
+    	return sb.toString();
+	}
+	
+	public Map<String, String> Headers(){
+		return this.headers;
+	}
+	
+	public void addHeader(String field, String value) {
+		this.Headers().put(field, value);
+	}
+
+}

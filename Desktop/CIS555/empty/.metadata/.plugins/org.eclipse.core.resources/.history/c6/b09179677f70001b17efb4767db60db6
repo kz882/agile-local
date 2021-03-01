@@ -1,0 +1,98 @@
+package edu.upenn.cis.cis455.m1.handling;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import edu.upenn.cis.cis455.HttpParsing;
+import edu.upenn.cis.cis455.exceptions.HaltException;
+import edu.upenn.cis.cis455.m1.interfaces.HttpRequest;
+import edu.upenn.cis.cis455.m1.interfaces.HttpResponse;
+import edu.upenn.cis.cis455.m1.interfaces.Request;
+import edu.upenn.cis.cis455.m1.interfaces.Response;
+
+/**
+ * Handles marshaling between HTTP Requests and Responses
+ */
+public class HttpIoHandler {
+    final static Logger logger = LogManager.getLogger(HttpIoHandler.class);
+
+    /**
+     * Sends an exception back, in the form of an HTTP response code and message.
+     * Returns true if we are supposed to keep the connection open (for persistent
+     * connections).
+     */
+    public static boolean sendException(Socket socket, Request request, HaltException except) {
+    	PrintWriter out;
+		try {
+			out = new PrintWriter(socket.getOutputStream(), true);
+	    	String initial_line = request.protocol() + " " + exception.statusCode());
+	    	out.println(initial_line);
+	    	out.print(response.bodyRaw());
+	    	out.flush();
+	    	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return true;
+    }
+
+    /**
+     * Sends data back. Returns true if we are supposed to keep the connection open
+     * (for persistent connections).
+     */
+    public static boolean sendResponse(Socket socket, Request request, Response response) {
+    	PrintWriter out;
+		try {
+			out = new PrintWriter(socket.getOutputStream(), true);
+	    	String initial_line = request.protocol() + " " + response.status();
+	    	out.println(initial_line);
+	    	out.print(response.bodyRaw());
+	    	out.flush();
+	    	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+    }
+    
+    public static HttpRequest handleRequest(Socket socket) {
+		Map<String, String> headers = new HashMap<>();
+		Map<String, List<String>> parms = new HashMap<>();
+		
+
+		String uri = null;
+		try {
+			uri = HttpParsing.parseRequest(
+					((InetSocketAddress) socket.getRemoteSocketAddress()).getHostName(),
+					socket.getInputStream(), 
+					headers,
+					parms);
+		} catch (HaltException | IOException e) {
+			e.printStackTrace();
+		}
+		HttpRequest request = new HttpRequest(uri, socket, headers, parms);
+		HttpResponse response = new HttpResponse(socket, request);
+		RequestHandler.handle(request, response);
+		
+		if (response.status()==200) {
+			sendResponse(socket, request, response);
+		}else {
+			HaltException ex = new HaltException(response.status());
+			sendException(socket, request, ex);
+		}
+		
+		
+		return request;
+		
+    }
+}

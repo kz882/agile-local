@@ -1,0 +1,50 @@
+package edu.upenn.cis.cis455;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+
+
+/**
+ * Based on  http://stackoverflow.com/questions/3732109/simple-http-server-in-java-using-only-java-se-api
+ * 
+ *
+ */
+@SuppressWarnings("restriction")
+public class SimpleWebServer {
+	public static void main(String[] args) throws Exception {
+        System.out.println("Launching on port " + 45555);
+        HttpServer server = HttpServer.create(new InetSocketAddress(45555), 0);
+        server.createContext("/test", new MyHandler());
+        server.setExecutor(null); // creates a default executor
+        server.start();
+    }
+	
+	static String convolute(String str) {
+		StringBuilder ret = new StringBuilder();
+		for (int i = 0; i < str.length(); i += 2)
+			ret.append(str.charAt(i));
+		
+		for (int j = 1; j < str.length(); j += 2)
+			ret.append(str.charAt(j));
+		
+		return ret.toString();
+	}
+
+	static class MyHandler implements HttpHandler {
+        public void handle(HttpExchange t) throws IOException {
+            System.out.println("Received request");
+            String response = "Welcome to my CIS455/555 webpage!";
+            t.sendResponseHeaders(200, 0);//response.length() + 2);
+            System.out.println(convolute(response));
+            OutputStream os = t.getResponseBody();
+            os.write((convolute(response) + "\r\n").getBytes());
+            os.flush();
+            os.close();
+        }
+    }
+}

@@ -1,0 +1,111 @@
+package edu.upenn.cis.cis455.m1.server;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import edu.upenn.cis.cis455.HttpParsing;
+import edu.upenn.cis.cis455.exceptions.HaltException;
+import edu.upenn.cis.cis455.m1.handling.HttpIoHandler;
+import edu.upenn.cis.cis455.m1.handling.RequestHandler;
+import edu.upenn.cis.cis455.m1.interfaces.HttpRequest;
+
+
+/**
+ * Stub class for a thread worker that handles Web requests
+ */
+public class HttpWorker implements Runnable {
+
+	static final Logger logger = LogManager.getLogger(HttpListener.class);	
+
+	private WebService webservice;
+	private HttpTaskQueue sharedQueue;
+	private int maxQueueSize;
+	private int port = 45555;
+	private String ipaddress = "0.0.0.0";
+	
+	
+	public HttpWorker(WebService webservice, HttpTaskQueue sharedQueue, int maxQueueSize, int port, String ipaddress) {
+		this.webservice = webservice;
+		this.sharedQueue = sharedQueue;
+		this.maxQueueSize = maxQueueSize;
+		this.port = port;
+		this.ipaddress = ipaddress;
+	}
+
+	public HttpTaskQueue getSharedQueue() {
+		return sharedQueue;
+	}
+
+	public void setSharedQueue(HttpTaskQueue sharedQueue) {
+		this.sharedQueue = sharedQueue;
+	}
+
+	public int getMaxQueueSize() {
+		return maxQueueSize;
+	}
+
+	public void setMaxQueueSize(int maxQueueSize) {
+		this.maxQueueSize = maxQueueSize;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+	
+	public String getIpaddress() {
+		return ipaddress;
+	}
+
+	public void setIpaddress(String ipaddress) {
+		this.ipaddress = ipaddress;
+	}
+
+	/**
+	 * Method to read from the queue.
+	 * @return - element read from queue
+	 * @throws InterruptedException
+	 */
+	private HttpTask readFromQueue() throws InterruptedException {
+		while (true) {
+			synchronized (sharedQueue) {
+				if (sharedQueue.isEmpty()) {
+					//If the queue is empty, we push the current thread to waiting state. Way to avoid polling.
+					logger.debug("Queue is currently empty");
+					sharedQueue.wait();
+				} else {
+					HttpTask task = sharedQueue.remove(0);
+					logger.debug("Notifying everyone we are removing an item");
+					sharedQueue.notifyAll();
+					logger.debug("Exiting queue with return");
+					return task;
+				}
+			}
+		}
+	}
+	
+    @Override
+    public void run() {
+    	logger.debug("running a new Worker Thread");
+    	while(true) {
+			try {
+				HttpTask taskReadFromQueue = readFromQueue();
+				logger.debug("Consumed " + taskReadFromQueue +" from shared queue");
+				HttpIoHandler.handleRequest(webservice, taskReadFromQueue.getSocket());
+				Thread.sleep(100);
+			} catch (InterruptedException | HaltException e) {
+				logger.error("Interrupt Exception in Consumer thread");
+			}
+		}
+    }
+
+}

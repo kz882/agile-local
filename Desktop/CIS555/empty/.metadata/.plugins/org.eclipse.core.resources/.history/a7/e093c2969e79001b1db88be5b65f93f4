@@ -1,0 +1,93 @@
+package edu.upenn.cis.cis455.m2.interfaces;
+
+public class HttpResponse extends Response {
+
+	public HttpResponse() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void header(String header, String value) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void redirect(String location) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void redirect(String location, int httpStatusCode) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void cookie(String name, String value) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void cookie(String name, String value, int maxAge) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void cookie(String name, String value, int maxAge, boolean secured) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void cookie(String name, String value, int maxAge, boolean secured, boolean httpOnly) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void cookie(String path, String name, String value) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void cookie(String path, String name, String value, int maxAge) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void cookie(String path, String name, String value, int maxAge, boolean secured) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void cookie(String path, String name, String value, int maxAge, boolean secured, boolean httpOnly) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void removeCookie(String name) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void removeCookie(String path, String name) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public String getHeaders() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

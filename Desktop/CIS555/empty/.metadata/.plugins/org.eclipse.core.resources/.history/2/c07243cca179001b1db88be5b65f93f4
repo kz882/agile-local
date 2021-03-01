@@ -1,0 +1,85 @@
+package edu.upenn.cis.cis455.m2.interfaces;
+
+import java.util.Map;
+import java.util.Set;
+
+public class HttpSession extends Session {
+	protected String id;
+	protected long creationTime;
+	protected long lastAccessedTime;
+	protected int maxInactiveInterval;
+	protected Map<String, Object> attributes;
+	
+	
+	public HttpSession() {
+		// TODO Auto-generated constructor stub
+		this.id = ;
+		this.creationTime = ;
+	}
+
+	@Override
+	public String id() {
+		// TODO Auto-generated method stub
+		return this.id;
+	}
+
+	@Override
+	public long creationTime() {
+		return this.creationTime;
+	}
+
+	@Override
+	public long lastAccessedTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void invalidate() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public int maxInactiveInterval() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void maxInactiveInterval(int interval) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void access() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void attribute(String name, Object value) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Object attribute(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<String> attributes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void removeAttribute(String name) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

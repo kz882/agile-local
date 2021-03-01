@@ -1,0 +1,83 @@
+package edu.upenn.cis.cis455.m2.interfaces;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+public class HttpSession extends Session {
+	protected String id;
+	protected long creationTime;
+	protected long lastAccessedTime;
+	protected int maxInactiveInterval;
+	protected Map<String, Object> attributes;
+	
+	
+	public HttpSession(int maxInactiveInterval) {
+		super();
+		this.creationTime = System.currentTimeMillis();
+		this.lastAccessedTime = this.creationTime;
+		this.maxInactiveInterval = maxInactiveInterval;
+		this.id = UUID.randomUUID();
+	}
+
+
+	@Override
+	public String id() {
+		return this.id;
+	}
+
+	@Override
+	public long creationTime() {
+		return this.creationTime;
+	}
+
+	@Override
+	public long lastAccessedTime() {
+		// TODO Auto-generated method stub
+		return this.lastAccessedTime;
+	}
+
+	@Override
+	public void invalidate() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public int maxInactiveInterval() {
+		return this.maxInactiveInterval;
+	}
+
+	@Override
+	public void maxInactiveInterval(int interval) {
+		this.maxInactiveInterval = interval;
+	}
+
+	@Override
+	public void access() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void attribute(String name, Object value) {
+		this.attributes.put(name, value);
+	}
+
+	@Override
+	public Object attribute(String name) {
+		return this.attributes.get(name);
+	}
+
+	@Override
+	public Set<String> attributes() {
+		return this.attributes.keySet();
+	}
+
+	@Override
+	public void removeAttribute(String name) {
+		this.attributes.remove(name);
+	}
+
+
+}

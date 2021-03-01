@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;555-hw1/README&apos; to &apos;README.txt&apos;" description="Rename resource &apos;README&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="README" name="README.txt" stamp="1613586281369" updateReferences="true"/>&#x0A;<refactoring accessors="true" comment="Delete element from project &apos;555-hw1&apos;&#x0A;- Original project: &apos;555-hw1&apos;&#x0A;- Original element: &apos;shutdown.html&apos;" description="Delete element" element1="www/shutdown.html" elements="0" flags="589830" id="org.eclipse.jdt.ui.delete" resources="1" stamp="1613587031724" subPackages="false" version="1.0"/>
+</session>
